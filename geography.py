@@ -4,11 +4,15 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import platform
 
-# [한글 깨짐 방지] 운영체제별 폰트 설정
+# [한글 깨짐 방지] 운영체제별 및 리눅스(스트림릿 클라우드) 폰트 설정
 if platform.system() == 'Windows':
     plt.rc('font', family='Malgun Gothic')
 elif platform.system() == 'Darwin':
     plt.rc('font', family='AppleGothic')
+else:
+    # 스트림릿 클라우드 서버 환경을 위한 나눔고딕 설정
+    plt.rc('font', family='NanumGothic')
+
 plt.rc('axes', unicode_minus=False)
 
 st.title("🧪 분자 벡터 합성 시뮬레이터 (2D & 3D)")
@@ -81,4 +85,5 @@ else:  # 3D 메테인 모드
 
     ax.set_xlabel('X축'); ax.set_ylabel('Y축'); ax.set_zlabel('Z축')
     ax.set_title("메테인(CH₄)의 3차원 공간벡터 모델")
+    ax.legend()
     st.pyplot(fig)
