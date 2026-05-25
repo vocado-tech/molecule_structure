@@ -3,17 +3,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import platform
+import koreanize_matplotlib  # ⬅️ 한글 깨짐을 자동으로 해결해주는 라이브러리
 
-# [한글 깨짐 방지] 운영체제별 및 리눅스(스트림릿 클라우드) 폰트 설정
-if platform.system() == 'Windows':
-    plt.rc('font', family='Malgun Gothic')
-elif platform.system() == 'Darwin':
-    plt.rc('font', family='AppleGothic')
-else:
-    # 스트림릿 클라우드 서버 환경을 위한 나눔고딕 설정
-    plt.rc('font', family='NanumGothic')
-
-plt.rc('axes', unicode_minus=False)
+# 기존 복잡한 운영체제별 폰트 설정 코드는 모두 삭제함
 
 st.title("🧪 분자 벡터 합성 시뮬레이터 (2D & 3D)")
 st.write("평면벡터부터 공간벡터까지: 분자 구조의 기하학적 분석")
