@@ -6,6 +6,52 @@ from mpl_toolkits.mplot3d import Axes3D
 # 그래프 내부 한글 깨짐을 방지하기 위해, 그래프 내부 텍스트는 영문(C, O, H, F 등)으로 처리함
 plt.rc('axes', unicode_minus=False)
 
+# 🎈 왼쪽 하단에 고정되어 떠다니는 말풍선 CSS 및 HTML 추가
+st.markdown(
+    """
+    <style>
+    .floating-bubble {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        background-color: #ff4b4b;
+        color: white;
+        padding: 12px 18px;
+        border-radius: 20px;
+        box-shadow: 2px 4px 12px rgba(0,0,0,0.15);
+        font-size: 14px;
+        font-weight: bold;
+        z-index: 9999;
+        animation: floatAnimation 3s ease-in-out infinite;
+    }
+    
+    /* 말풍선 꼬리 모양 */
+    .floating-bubble::after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 20px;
+        border-width: 8px 8px 0;
+        border-style: solid;
+        border-color: #ff4b4b transparent;
+        display: block;
+        width: 0;
+    }
+
+    /* 위아래로 부드럽게 흔들리는 애니메이션 효과 */
+    @keyframes floatAnimation {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+        100% { transform: translateY(0px); }
+    }
+    </style>
+    <div class="floating-bubble">
+        기하는 너무 어려워 ㅠㅠ
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
 st.title("🧪 분자 벡터 합성 시뮬레이터 (2D & 3D)")
 st.write("평면벡터부터 공간벡터까지: 분자 구조의 기하학적 분석")
 
