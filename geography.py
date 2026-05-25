@@ -2,26 +2,13 @@ import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-import matplotlib.font_manager as fm
-import urllib.request
-import os
 
-# [한글 깨짐 방지] 나눔 폰트 원격 다운로드 및 설정
-@st.cache_data
-def load_korean_font():
-    font_url = "https://github.com/google/fonts/raw/main/ofl/nanumbarungothic/NanumBarunGothic.ttf"
-    font_path = "NanumBarunGothic.ttf"
-    if not os.path.exists(font_path):
-        urllib.request.urlretrieve(font_url, font_path)
-    return font_path
-
-try:
-    font_p = load_korean_font()
-    font_name = fm.FontProperties(fname=font_p).get_name()
-    plt.rc('font', family=font_name)
-except Exception as e:
-    st.warning(f"폰트 로드 실패 (기본 폰트 사용): {e}")
-
+# [한글 깨짐 방지] 다운로드 없이 시스템 기본 폰트(sans-serif) 설정 적용
+plt.rcParams['font.family'] = 'sans-serif'
+plt.rcParams['font.sans-serif'] = [
+    'DejaVu Sans', 'Arial', 'Helvetica', 'Lucida Grande', 
+    'Verdana', 'Geneva', 'Lucid', 'Avant Garde', 'sans-serif'
+]
 plt.rc('axes', unicode_minus=False)
 
 st.title("🧪 분자 벡터 합성 시뮬레이터 (2D & 3D)")
