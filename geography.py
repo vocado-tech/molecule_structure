@@ -2,10 +2,27 @@ import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-import platform
-import koreanize_matplotlib  # ⬅️ 한글 깨짐을 자동으로 해결해주는 라이브러리
+import matplotlib.font_manager as fm
+import urllib.request
+import os
 
-# 기존 복잡한 운영체제별 폰트 설정 코드는 모두 삭제함
+# [한글 깨짐 방지] 나눔 폰트 원격 다운로드 및 설정
+@st.cache_data
+def load_korean_font():
+    font_url = "https://github.com/google/fonts/raw/main/ofl/nanumbarungothic/NanumBarunGothic.ttf"
+    font_path = "NanumBarunGothic.ttf"
+    if not os.path.exists(font_path):
+        urllib.request.urlretrieve(font_url, font_path)
+    return font_path
+
+try:
+    font_p = load_korean_font()
+    font_name = fm.FontProperties(fname=font_p).get_name()
+    plt.rc('font', family=font_name)
+except Exception as e:
+    st.warning(f"폰트 로드 실패 (기본 폰트 사용): {e}")
+
+plt.rc('axes', unicode_minus=False)
 
 st.title("🧪 분자 벡터 합성 시뮬레이터 (2D & 3D)")
 st.write("평면벡터부터 공간벡터까지: 분자 구조의 기하학적 분석")
@@ -54,7 +71,6 @@ else:  # 3D 메테인 모드
     ax = fig.add_subplot(111, projection='3d')
     
     # 정사면체 기하학적 좌표 설정 (C: 원점, H: 각 꼭짓점)
-    # 공간벡터 성분: (1,1,1), (-1,-1,1), (-1,1,-1), (1,-1,-1)
     h_coords = np.array([[1, 1, 1], [-1, -1, 1], [-1, 1, -1], [1, -1, -1]])
     
     # 탄소(C) 원점 표시
@@ -63,12 +79,9 @@ else:  # 3D 메테인 모드
     # 4개의 공간벡터 그리기
     for i, coord in enumerate(h_coords):
         ax.scatter(coord[0], coord[1], coord[2], s=200, label=f'수소 (H){i+1}')
-        # 원점에서 각 수소로 향하는 화살표 (공간벡터)
         ax.quiver(0, 0, 0, coord[0], coord[1], coord[2], color='blue', alpha=0.6, arrow_length_ratio=0.1)
-        # 결합선 그리기
         ax.plot([0, coord[0]], [0, coord[1]], [0, coord[2]], color='gray', linestyle='--')
 
-    # 공간벡터 합 계산: (1-1-1+1, 1-1+1-1, 1+1-1-1) = (0, 0, 0)
     v_sum = np.sum(h_coords, axis=0)
     st.write(f"📊 **공간벡터 합계 (Σv):** x={v_sum[0]}, y={v_sum[1]}, z={v_sum[2]}")
     
