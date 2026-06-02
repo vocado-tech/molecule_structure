@@ -4,27 +4,37 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import platform
 import matplotlib.font_manager as fm
+import os
 
 # ==========================================================
-# [초강력 한글 깨짐 방지 대책] 운영체제별 한글 폰트 직접 강제 로드
+# [철통 보안 한글 깨짐 방지] 폰트 파일 경로 직접 지정 알고리즘
 # ==========================================================
+font_name = "sans-serif"
 try:
     if platform.system() == 'Windows':
-        # 윈도우의 기본 맑은 고딕을 직접 로드하여 모든 글꼴 깨짐 방지
-        plt.rc('font', family='Malgun Gothic')
+        # 윈도우 시스템 폰트 폴더에서 맑은 고딕 파일을 직접 로드
+        win_font_path = os.path.join(os.environ['SystemRoot'], 'Fonts', 'malgun.ttf')
+        if os.path.exists(win_font_path):
+            font_prop = fm.FontProperties(fname=win_font_path)
+            font_name = font_prop.get_name()
+            plt.rc('font', family=font_name)
     elif platform.system() == 'Darwin': # Mac
-        plt.rc('font', family='AppleGothic')
-    else:
-        plt.rc('font', family='sans-serif')
+        mac_font_path = '/System/Library/Fonts/Supplemental/AppleGothic.ttf'
+        if os.path.exists(mac_font_path):
+            font_prop = fm.FontProperties(fname=mac_font_path)
+            font_name = font_prop.get_name()
+            plt.rc('font', family=font_name)
 except Exception as e:
     pass
 
-# 마이너스 부호 깨짐 방지
+# 마이너스 기호 깨짐 방지
 plt.rcParams['axes.unicode_minus'] = False 
 # ==========================================================
 
+# 웹 앱 상단 제목 및 제작자 표기 반영
 st.title("🧪 분자 벡터 합성 시뮬레이터 (2D & 3D)")
-st.write("평면벡터부터 공간벡터까지: 분자 구조의 기하학적 분석")
+st.subheader("👨‍💻 제작: 김도형")
+st.write("대각선 평면벡터와 공간벡터의 성분 분해를 통한 분자의 극성 분석")
 
 # 1. 시뮬레이션 모드 선택
 mode = st.sidebar.selectbox("분석 모드 선택", ["2D 평면 분자 (H2O, CO2 등)", "3D 공간 분자 (CH4 메테인)"])
@@ -32,7 +42,6 @@ mode = st.sidebar.selectbox("분석 모드 선택", ["2D 평면 분자 (H2O, CO2
 if mode == "2D 평면 분자 (H2O, CO2 등)":
     molecule = st.radio("분자를 선택하세요", ["이산화탄소 (CO₂)", "물 (H₂O)", "폼알데하이드 (CH₂O)", "삼플루오린화붕소 (BF₃)"])
     
-    # 폰트가 깨지지 않도록 한글 설정을 인수로 직접 주입하는 방식 적용
     fig, ax = plt.subplots(figsize=(7, 7))
     ax.plot(0, 0, 'ko', markersize=20, label="중심 원자")
     
@@ -63,7 +72,7 @@ if mode == "2D 평면 분자 (H2O, CO2 등)":
     if not np.allclose(f_total, [0, 0], atol=1e-2):
         ax.quiver(0, 0, f_total[0], f_total[1], angles='xy', scale_units='xy', scale=1, color='red', width=0.015, label='총 합벡터')
     
-    # 2D 결과 박스 처리
+    # 2D 결과 박스 처리 (노란색 박스 고정)
     if np.allclose(f_total, [0, 0], atol=1e-2):
         st.warning("💛 대칭 구조로 인해 극성 벡터의 합이 완벽히 0(영벡터)이 되며, 무극성 분자입니다.")
     else:
