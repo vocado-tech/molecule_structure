@@ -10,6 +10,36 @@ plt.rc('font', family='sans-serif')
 plt.rcParams['axes.unicode_minus'] = False 
 # ==========================================================
 
+# ==========================================================
+# [말풍선 CSS] 화면 왼쪽 하단에 둥둥 떠다니는 말풍선 추가
+# ==========================================================
+st.markdown("""
+<style>
+.floating-bubble {
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+    background-color: #f8f9fa;
+    border: 2px solid #dee2e6;
+    border-radius: 20px;
+    padding: 12px 18px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #495057;
+    box-shadow: 3px 3px 10px rgba(0,0,0,0.1);
+    z-index: 9999;
+    animation: float 3s ease-in-out infinite;
+}
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}
+</style>
+<div class="floating-bubble">💭 기하는 너무 어려워 ㅠㅠ</div>
+""", unsafe_allow_html=True)
+# ==========================================================
+
 # 웹 앱 상단 제목 및 제작자 표기
 st.title("🧪 분자 벡터 합성 시뮬레이터 (2D & 3D)")
 st.subheader("👨‍💻 제작: 김도형")
@@ -28,30 +58,24 @@ if mode == "2D 평면 분자 (H2O, CO2 등)":
     labels = []
     coords = []
     
-    # 💥 화학Ⅰ 교과서 기준 전기음성도 차이(소수점 첫째 자리)로 정밀 수정
+    # 화학Ⅰ 교과서 기준 전기음성도 차이(소수점 첫째 자리)로 정밀 수정
     if molecule == "이산화탄소 (CO₂)":
         coords = [(-2, 0), (2, 0)]; labels = ["Oxygen (O)", "Oxygen (O)"]
-        # 탄소(2.5)와 산소(3.5)의 차이 = 1.0
         f_vectors = [np.array([-1.0, 0]), np.array([1.0, 0])]
         title_name = "CO2 2D Geometric Vector Model"
         
     elif molecule == "물 (H₂O)":
         coords = [(-1.5, -1.2), (1.5, -1.2)]; labels = ["Hydrogen (H)", "Hydrogen (H)"]
-        # 수소(2.1)와 산소(3.5)의 차이 = 1.4 (결합각 104.5도 기준 삼각비 분해)
-        # 1.4 * sin(52.25°) ≈ 1.1, 1.4 * cos(52.25°) ≈ 0.9
         f_vectors = [np.array([1.1, 0.9]), np.array([-1.1, 0.9])]
         title_name = "H2O 2D Geometric Vector Model"
         
     elif molecule == "폼알데하이드 (CH₂O)":
         coords = [(-1.5, -1.2), (1.5, -1.2), (0, 2.5)]; labels = ["Hydrogen (H)", "Hydrogen (H)", "Oxygen (O)"]
-        # 수소(2.1)와 탄소(2.5)의 차이 = 0.4 (결합각 116도 분해 -> 0.4 * sin(58°) ≈ 0.3, 0.4 * cos(58°) ≈ 0.2)
-        # 탄소(2.5)와 산소(3.5)의 차이 = 1.0 (수직 위 방향)
         f_vectors = [np.array([0.3, 0.2]), np.array([-0.3, 0.2]), np.array([0, 1.0])]
         title_name = "CH2O 2D Geometric Vector Model"
         
     elif molecule == "삼플루오린화붕소 (BF₃)":
         coords = [(0, 2.5), (-2.16, -1.25), (2.16, -1.25)]; labels = ["Fluorine (F)", "Fluorine (F)", "Fluorine (F)"]
-        # 붕소(2.0)와 플루오린(4.0)의 차이 = 2.0 (120도 분해 -> 2.0 * sin(60°) ≈ 1.7, 2.0 * cos(60°) = 1.0)
         f_vectors = [np.array([0, 2.0]), np.array([-1.7, -1.0]), np.array([1.7, -1.0])]
         title_name = "BF3 2D Geometric Vector Model"
 
@@ -84,7 +108,6 @@ else:  # 3D 메테인 모드
     ax = fig.add_subplot(111, projection='3d')
     
     # 수소(2.1)와 탄소(2.5)의 차이 = 0.4
-    # 3D 공간 상에서 크기가 0.4가 되도록 정사면체 단위 벡터에 가중치 부여
     c = 0.4 / np.sqrt(3)
     h_coords = np.array([[c, c, c], [-c, -c, c], [-c, c, -c], [c, -c, -c]])
     
