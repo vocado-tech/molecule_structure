@@ -52,7 +52,9 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-st.title("🧪 김도형의 분자 벡터 합성 시뮬레이터 (2D & 3D)")
+# 타이틀 수정 및 서브 캡션 추가
+st.title("🧪 분자 벡터 합성 시뮬레이터 (2D & 3D)")
+st.caption("제작: 김도형")
 st.write("평면벡터부터 공간벡터까지: 분자 구조의 기하학적 분석")
 
 # 1. 시뮬레이션 모드 선택
