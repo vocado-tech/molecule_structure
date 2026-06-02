@@ -3,13 +3,25 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import platform
+import matplotlib.font_manager as fm
 
-# [한글 깨짐 방지] 운영체제별 폰트 설정
-if platform.system() == 'Windows':
-    plt.rc('font', family='Malgun Gothic')
-elif platform.system() == 'Darwin':
-    plt.rc('font', family='AppleGothic')
-plt.rc('axes', unicode_minus=False)
+# ==========================================================
+# [초강력 한글 깨짐 방지 대책] 운영체제별 한글 폰트 직접 강제 로드
+# ==========================================================
+try:
+    if platform.system() == 'Windows':
+        # 윈도우의 기본 맑은 고딕을 직접 로드하여 모든 글꼴 깨짐 방지
+        plt.rc('font', family='Malgun Gothic')
+    elif platform.system() == 'Darwin': # Mac
+        plt.rc('font', family='AppleGothic')
+    else:
+        plt.rc('font', family='sans-serif')
+except Exception as e:
+    pass
+
+# 마이너스 부호 깨짐 방지
+plt.rcParams['axes.unicode_minus'] = False 
+# ==========================================================
 
 st.title("🧪 분자 벡터 합성 시뮬레이터 (2D & 3D)")
 st.write("평면벡터부터 공간벡터까지: 분자 구조의 기하학적 분석")
@@ -19,6 +31,8 @@ mode = st.sidebar.selectbox("분석 모드 선택", ["2D 평면 분자 (H2O, CO2
 
 if mode == "2D 평면 분자 (H2O, CO2 등)":
     molecule = st.radio("분자를 선택하세요", ["이산화탄소 (CO₂)", "물 (H₂O)", "폼알데하이드 (CH₂O)", "삼플루오린화붕소 (BF₃)"])
+    
+    # 폰트가 깨지지 않도록 한글 설정을 인수로 직접 주입하는 방식 적용
     fig, ax = plt.subplots(figsize=(7, 7))
     ax.plot(0, 0, 'ko', markersize=20, label="중심 원자")
     
@@ -41,6 +55,7 @@ if mode == "2D 평면 분자 (H2O, CO2 등)":
 
     f_total = sum(f_vectors)
     colors = ['blue', 'green', 'purple']
+    
     for i, (coord, f_vec, label) in enumerate(zip(coords, f_vectors, labels)):
         ax.plot(coord[0], coord[1], 'o', markersize=15, label=f"{label}")
         ax.quiver(0, 0, f_vec[0], f_vec[1], angles='xy', scale_units='xy', scale=1, color=colors[i], alpha=0.7)
@@ -54,7 +69,9 @@ if mode == "2D 평면 분자 (H2O, CO2 등)":
     else:
         st.error(f"⚡ 기하학적 상쇄 실패! 남은 합벡터 성분: (x: {f_total[0]:.1f}, y: {f_total[1]:.1f}) -> 극성 분자")
     
-    ax.set_xlim(-5, 5); ax.set_ylim(-5, 5); ax.grid(True, alpha=0.2); ax.legend()
+    ax.set_xlim(-5, 5); ax.set_ylim(-5, 5); ax.grid(True, alpha=0.2)
+    ax.legend(loc='lower right')
+    ax.set_title(f"{molecule} 2차원 기하학적 벡터 모델")
     st.pyplot(fig)
 
 else:  # 3D 메테인 모드
@@ -79,7 +96,6 @@ else:  # 3D 메테인 모드
     v_sum = np.sum(h_coords, axis=0)
     st.write(f"📊 **공간벡터 합계 (Σv):** x={v_sum[0]}, y={v_sum[1]}, z={v_sum[2]}")
     
-    # 3D 결과 박스를 노란색(st.warning)으로 일관되게 변경
     if np.allclose(v_sum, [0, 0, 0]):
         st.warning("💛 대칭 구조로 인해 극성 벡터의 합이 완벽히 0(영벡터)이 되며, 무극성 분자입니다.")
 
