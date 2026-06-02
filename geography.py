@@ -11,24 +11,46 @@ plt.rcParams['axes.unicode_minus'] = False
 # ==========================================================
 
 # ==========================================================
-# [말풍선 CSS] 화면 왼쪽 하단에 둥둥 떠다니는 말풍선 추가
+# [말풍선 CSS] 꼬리가 달린 진짜 말풍선 모양 디자인 
 # ==========================================================
 st.markdown("""
 <style>
 .floating-bubble {
     position: fixed;
-    bottom: 30px;
-    left: 30px;
-    background-color: #f8f9fa;
-    border: 2px solid #dee2e6;
-    border-radius: 20px;
-    padding: 12px 18px;
-    font-size: 14px;
-    font-weight: bold;
-    color: #495057;
-    box-shadow: 3px 3px 10px rgba(0,0,0,0.1);
+    bottom: 50px;
+    left: 40px;
+    background-color: #ffffff;
+    border: 3px solid #2d3436;
+    border-radius: 25px;
+    padding: 14px 22px;
+    font-size: 15px;
+    font-weight: 800;
+    color: #2d3436;
+    box-shadow: 5px 5px 0px rgba(0,0,0,0.1);
     z-index: 9999;
     animation: float 3s ease-in-out infinite;
+}
+/* 말풍선 꼬리 (흰색 속) */
+.floating-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -15px;
+    left: 28px;
+    border-width: 15px 15px 0 0;
+    border-style: solid;
+    border-color: #ffffff transparent transparent transparent;
+    z-index: 2;
+}
+/* 말풍선 꼬리 테두리 (검은색) */
+.floating-bubble::before {
+    content: '';
+    position: absolute;
+    bottom: -20px;
+    left: 26px;
+    border-width: 19px 18px 0 0;
+    border-style: solid;
+    border-color: #2d3436 transparent transparent transparent;
+    z-index: 1;
 }
 @keyframes float {
     0% { transform: translateY(0px); }
@@ -36,7 +58,7 @@ st.markdown("""
     100% { transform: translateY(0px); }
 }
 </style>
-<div class="floating-bubble">💭 기하는 너무 어려워 ㅠㅠ</div>
+<div class="floating-bubble">기하는 너무 어려워 ㅠㅠ</div>
 """, unsafe_allow_html=True)
 # ==========================================================
 
